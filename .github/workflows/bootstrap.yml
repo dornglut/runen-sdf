@@ -1,0 +1,42 @@
+name: RunenSDF Bootstrap Validation
+
+on:
+  push:
+    branches:
+      - agent/pt-runensdf-003-bootstrap
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install toolchains
+        run: |
+          rustup toolchain install stable --profile minimal --component rustfmt,clippy
+          rustup toolchain install 1.93.0 --profile minimal
+      - name: Generate lockfile
+        run: cargo generate-lockfile
+      - name: Format
+        run: cargo fmt --all -- --check
+      - name: Test
+        run: cargo test --workspace --locked
+      - name: Clippy
+        run: cargo clippy --workspace --all-targets --locked -- -D warnings
+      - name: Documentation
+        run: cargo doc --workspace --no-deps --locked
+      - name: MSRV
+        run: cargo +1.93.0 test --workspace --locked
+      - name: Upload lockfile
+        uses: actions/upload-artifact@v4
+        with:
+          name: cargo-lock
+          path: Cargo.lock
+      - name: Diff hygiene
+        run: git diff --check
