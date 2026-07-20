@@ -4,6 +4,10 @@
 
 `PT-RUNENSDF-003 — Standalone Repository Creation and Corrected Source Transfer`
 
+## Active delivery
+
+`PR #1 — Bootstrap standalone RunenSDF repository`
+
 ## State
 
 ```text
@@ -12,6 +16,7 @@ canonical naming          complete
 root package manifest     complete
 validation task scaffold  complete
 provenance baseline       complete
+bootstrap PR              open draft
 corrected source transfer pending
 package test transfer     pending
 downstream conformance    pending
