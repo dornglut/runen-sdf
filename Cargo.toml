@@ -5,7 +5,7 @@ edition = "2024"
 rust-version = "1.93.0"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/Crystonix/runen-sdf"
-description = "Validated signed-field mathematics and CPU queries"
+description = "Validated signed-field mathematics and CPU reference queries"
 publish = false
 
 [workspace]
@@ -18,6 +18,9 @@ members = [
 [dependencies]
 glam = "0.31.0"
 thiserror = "2.0.18"
+
+[lints]
+workspace = true
 
 [workspace.lints.rust]
 unsafe_code = "forbid"

@@ -1,51 +1,23 @@
-use std::process::{Command, ExitStatus};
+mod command;
+mod fs_walk;
+mod links;
+mod policy;
 
 fn main() {
-    let command = std::env::args().nth(1);
-    if command.as_deref() != Some("validate") {
-        eprintln!("usage: cargo xtask validate");
-        std::process::exit(2);
-    }
+    let result = match std::env::args().nth(1).as_deref() {
+        Some("validate") => validate(),
+        _ => Err("usage: cargo xtask validate".to_owned()),
+    };
 
-    let checks: &[(&str, &[&str])] = &[
-        ("cargo", &["metadata", "--format-version", "1", "--locked"]),
-        ("cargo", &["fmt", "--all", "--", "--check"]),
-        ("cargo", &["test", "--workspace", "--locked"]),
-        (
-            "cargo",
-            &[
-                "clippy",
-                "--workspace",
-                "--all-targets",
-                "--locked",
-                "--",
-                "-D",
-                "warnings",
-            ],
-        ),
-        ("cargo", &["doc", "--workspace", "--no-deps", "--locked"]),
-        (
-            "cargo",
-            &["+1.93.0", "test", "--workspace", "--locked"],
-        ),
-    ];
-
-    for (program, arguments) in checks {
-        println!("running: {program} {}", arguments.join(" "));
-        match run(program, arguments) {
-            Ok(status) if status.success() => {}
-            Ok(status) => {
-                eprintln!("validation command failed with {status}");
-                std::process::exit(status.code().unwrap_or(1));
-            }
-            Err(error) => {
-                eprintln!("failed to execute {program}: {error}");
-                std::process::exit(1);
-            }
-        }
+    if let Err(error) = result {
+        eprintln!("validation failed: {error}");
+        std::process::exit(1);
     }
 }
 
-fn run(program: &str, arguments: &[&str]) -> std::io::Result<ExitStatus> {
-    Command::new(program).args(arguments).status()
+fn validate() -> Result<(), String> {
+    policy::validate_repository()?;
+    links::validate_markdown_links()?;
+    command::run_validation_commands()?;
+    command::prove_clean_repository_state()
 }
