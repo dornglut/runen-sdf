@@ -4,27 +4,21 @@
 
 `PT-RUNENSDF-003 — Standalone Repository and Corrected Source Transfer`
 
-## Active delivery
-
-`PR #1 — Bootstrap standalone RunenSDF repository`
-
 ## State
 
 ```text
-repository skeleton             complete
-canonical naming                complete
-root package manifest           complete
-root lint inheritance           complete
-MIT and Apache-2.0 licenses     complete
-security policy                 complete
-validation authority            implemented
-self-hosted bootstrap CI        implemented
-initial Cargo.lock              pending automatic workflow commit
-corrected source transfer       pending
-all nine package tests          pending
-downstream public conformance   pending
-stable and Rust 1.93.0 evidence pending
-standalone parity commit        pending
+repository identity             complete
+root public package             complete
+licenses and security policy    complete
+corrected source transfer       complete on active branch
+all nine integration tests      complete on active branch
+public downstream conformance   complete on active branch
+framework documentation         complete on active branch
+committed independent lockfile  complete on active branch
+repository validation authority complete
+durable automatic CI            configured
+stable and Rust 1.93.0 evidence pending runner allocation
+standalone parity review        pending final validated head
 ```
 
-No Runenwerk dependency cutover or in-workspace source retirement is authorized in this phase.
+No Runenwerk dependency cutover, workspace-member removal, lockfile retirement, or deletion of `domain/sdf` is authorized in this phase.

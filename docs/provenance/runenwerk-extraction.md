@@ -8,23 +8,29 @@ source commit: 8de096259eab30f8d67672010df9190970d0bfc4
 source path: domain/sdf
 source phase: PT-RUNENSDF-002
 source pull request: Crystonix/runenwerk#116
+transfer phase: PT-RUNENSDF-003
 ```
 
-The source commit completed the validated bounds and ray boundary, signed-value versus conservative-step model, exact-distance capability, structured query outcomes, fallible gradient and normal behavior, and all nine package test modules.
+The source commit completed validated local bounds and rays, finite signed values, optional conservative steps, exact-distance capability, invariant-preserving construction, structured query outcomes, explicit gradient failures, and all nine integration-test modules.
 
-## Transfer policy
+## Transfer mapping
 
-The initial standalone transfer preserves the proven implementation and tests before optional module reorganization. Package identity changes from `sdf` to `runen-sdf`; crate imports change from `sdf` to `runen_sdf`.
+```text
+domain/sdf/src/**   -> src/**
+domain/sdf/tests/** -> tests/**
+package sdf         -> package runen-sdf
+crate imports sdf   -> crate imports runen_sdf
+```
 
-Runenwerk retains integration adapters and all ECS, world, scene, material, renderer, GPU, UI, and product-specific behavior.
+The implementation and tests are transferred without behavioral redesign. Repository identity, crate imports, framework documentation, conformance, and validation are the only intentional transfer-layer changes.
 
-This document does not claim preserved per-file Git history. The exact source commit and path are the provenance authority.
+This record does not claim preserved per-file Git history. The exact source commit, path, and parity review are the durable provenance authority.
 
 ## Completion fields
 
 ```text
-standalone parity commit: pending
-standalone validation run: pending
+standalone transfer commit: pending branch commit
+standalone validation run: pending automatic GitHub Actions allocation
 Runenwerk cutover commit: pending PT-RUNENSDF-004
 Runenwerk source retirement: pending PT-RUNENSDF-004
 ```

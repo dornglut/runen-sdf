@@ -1,43 +1,37 @@
-name: RunenSDF Bootstrap and Validation
+name: RunenSDF Validation
 
 on:
+  pull_request:
+    branches:
+      - main
   push:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
-  group: runen-sdf-bootstrap-${{ github.ref }}
+  group: runen-sdf-validation-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   validate:
-    name: Bootstrap lockfile and validate
+    name: Validate standalone framework
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
-      - name: Checkout exact branch revision
+      - name: Checkout exact revision
         uses: actions/checkout@v4
         with:
           clean: true
-          fetch-depth: 0
+          fetch-depth: 1
 
       - name: Install required Rust toolchains
         run: |
           rustup toolchain install stable --profile minimal --component rustfmt,clippy
           rustup toolchain install 1.93.0 --profile minimal --component rustfmt,clippy
 
-      - name: Generate and commit initial lockfile when absent
-        run: |
-          if [ ! -f Cargo.lock ]; then
-            cargo generate-lockfile
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add Cargo.lock
-            git commit -m "Generate standalone Cargo lockfile"
-            git push origin "HEAD:${{ github.ref_name }}"
-          fi
-
-      - name: Validate repository through the maintained authority
+      - name: Validate repository through maintained authority
         run: cargo validate

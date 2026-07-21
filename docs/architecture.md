@@ -1,17 +1,19 @@
 # RunenSDF Architecture
 
-RunenSDF is a host-neutral Rust framework for validated signed-field mathematics and CPU reference queries.
-
-It owns field samples and capabilities, conservative tracing steps, validated bounds and rays, primitives, operators, transforms, differential helpers, CPU queries, and structured errors.
-
-It does not own Runenwerk adapters, ECS, world storage or streaming, scene state, materials, rendering, GPU or shader code, native windows, UI integration, or persisted product formats.
-
-Dependency direction:
+RunenSDF is one independently useful public package with two non-public support packages: `conformance/downstream` and `xtask`.
 
 ```text
 runen-sdf -> glam, thiserror
+conformance/downstream -> runen-sdf public API
+xtask -> standard library and repository tools
 Runenwerk adapters -> runen-sdf
 runen-sdf -/-> Runenwerk
 ```
 
-The repository contains one public root package. Supporting workspace packages exist only for downstream conformance and repository validation.
+The public package owns signed-field samples and capabilities, validated bounds and rays, primitives, operations, domain composition, transforms, gradients, normals, and deterministic CPU reference queries.
+
+It does not own ECS, scheduling, world storage or streaming, scene state, materials, rendering, GPU execution, shaders, windows, UI, networking, or persisted product formats.
+
+No façade, compatibility crate, private source inclusion, submodule, external path dependency, or speculative package decomposition is permitted.
+
+See the [numerical contract](numerics.md), [query model](query-model.md), and [ownership boundary](ownership.md).
