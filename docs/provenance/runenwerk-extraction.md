@@ -9,6 +9,8 @@ source path: domain/sdf
 source phase: PT-RUNENSDF-002
 source pull request: Crystonix/runenwerk#116
 transfer phase: PT-RUNENSDF-003
+accepted standalone revision: d52badefc640d6dc6dcdd40268af3aea1bb8eefe
+standalone pull request: Crystonix/runen-sdf#1
 ```
 
 The source commit completed validated local bounds and rays, finite signed values,
@@ -39,33 +41,42 @@ are the durable provenance authority.
 ```text
 source-and-test transfer commit: 2d1f5ea4bd739d5c6358e9348d757c2b54bcde1b
 validated formatted candidate: 4f20b187d134e102193d5eb1dcd126c558accadd
+accepted standalone merge: d52badefc640d6dc6dcdd40268af3aea1bb8eefe
 validation mirror repository: Crystonix/runen-ui
 validation mirror pull request: Crystonix/runen-ui#16
 full command validation run: 29845971330
-maintained cargo validate run: 29846386222
-maintained cargo validate conclusion: success
+maintained mirror cargo validate run: 29846386222
+maintained mirror cargo validate conclusion: success
+native pre-runner failure: 29846751864
+native authority-correction candidate: 2d02f66a7b88addf8d871c88e79489591c92e079
+native cargo validate run: 29895816472
+native cargo validate conclusion: success
 ```
 
-The private target repository's GitHub Actions service failed before runner
-allocation and produced no source-command logs. To avoid substituting manual owner
+The original native pull-request run produced no source-command logs because
+execution failed before runner allocation. To avoid substituting manual owner
 validation, the complete standalone candidate source, all nine integration tests,
 downstream conformance package, independent lockfile, and repository validation
 tooling were mirrored into a temporary public validation branch. GitHub Actions
 then executed the maintained `cargo validate` authority successfully.
 
-The successful maintained-authority run covered repository policy, relative
+The successful maintained-authority runs covered repository policy, relative
 Markdown links, locked metadata, direct and inverse dependency trees, formatting,
 all workspace tests, downstream public conformance, all-target denied-warning
 Clippy, denied-warning rustdoc, Rust 1.93.0 tests, diff hygiene, and clean tracked
-state.
+state. Native run `29895816472` confirms the same authority executes successfully
+inside `Crystonix/runen-sdf` itself.
 
-The temporary validation branch and pull request are evidence-only and must not be
+The temporary validation branch and pull request were evidence-only and were not
 merged into RunenUI.
 
-## Remaining cutover fields
+## Remaining integration fields
 
 ```text
-accepted standalone revision: final PT-RUNENSDF-003 pull-request head
 Runenwerk cutover commit: pending PT-RUNENSDF-004
 Runenwerk source retirement: pending PT-RUNENSDF-004
+Runenwerk dependency decision: pending exact consumer audit
 ```
+
+Runenwerk must not retain a forwarding package, compatibility alias, source include,
+branch dependency, or duplicate implementation after the clean cutover.
