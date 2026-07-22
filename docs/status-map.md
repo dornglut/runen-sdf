@@ -1,32 +1,48 @@
 # Status Map
 
-## Current phase
+## Current state
 
-`PT-RUNENSDF-003 — Standalone Repository and Corrected Source Transfer`
+`PT-RUNENSDF-003 — Standalone Repository and Corrected Source Transfer` is complete.
 
-## State
+The accepted standalone revision is:
 
 ```text
-repository identity             complete
-root public package             complete
-licenses and security policy    complete
-corrected source transfer       complete
-all nine integration tests      complete
-public downstream conformance   complete
-framework documentation         complete
-committed independent lockfile  complete
-repository validation authority complete
-durable target CI               configured
-automated stable validation     passed in run 29845971330
-automated Rust 1.93.0 tests     passed in run 29845971330
-maintained cargo validate        passed in run 29846386222
-standalone parity review        complete for transferred source and tests
+repository: Crystonix/runen-sdf
+commit: d52badefc640d6dc6dcdd40268af3aea1bb8eefe
+package: runen-sdf
+crate: runen_sdf
+source baseline: Crystonix/runenwerk@8de096259eab30f8d67672010df9190970d0bfc4
 ```
 
-The private repository workflow remains configured as the durable merge gate. The
-successful command evidence was obtained automatically from a temporary public
-validation mirror because the private-repository Actions service failed before
-runner allocation and produced no source-command logs.
+## Accepted baseline
 
-No Runenwerk dependency cutover, workspace-member removal, lockfile retirement, or
-deletion of `domain/sdf` is authorized in this phase.
+```text
+repository identity              complete
+root public package              complete
+licenses and security policy     complete
+corrected source transfer        complete
+all nine integration tests       complete
+public downstream conformance    complete
+framework documentation          complete
+committed independent lockfile   complete
+repository validation authority  complete
+durable repository CI            configured
+standalone parity review         complete
+PT-RUNENSDF-003 merge             complete
+```
+
+Automatic command validation passed in public mirror runs `29845971330` and
+`29846386222`. The native pull-request run `29846751864` failed before any runner
+step was allocated and therefore produced no source-command evidence. This
+repository retains the same `cargo validate` authority and requires a successful
+native run before this closeout correction is merged.
+
+## External integration state
+
+Runenwerk clean cutover is not owned by this repository. Current Runenwerk `main`
+still contains `domain/sdf`; its consumer audit, dependency decision, internal
+package retirement, and duplicate-authority proof are `PT-RUNENSDF-004` work in
+`Crystonix/runenwerk`.
+
+RunenSDF must not add a compatibility package, forwarding namespace, source mirror,
+or dependency on Runenwerk during that cutover.
