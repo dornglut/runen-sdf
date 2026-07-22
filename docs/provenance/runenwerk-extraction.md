@@ -45,28 +45,30 @@ accepted standalone merge: d52badefc640d6dc6dcdd40268af3aea1bb8eefe
 validation mirror repository: Crystonix/runen-ui
 validation mirror pull request: Crystonix/runen-ui#16
 full command validation run: 29845971330
-maintained cargo validate run: 29846386222
-maintained cargo validate conclusion: success
-native pull-request run: 29846751864
-native pull-request conclusion: platform failure before runner steps
+maintained mirror cargo validate run: 29846386222
+maintained mirror cargo validate conclusion: success
+native pre-runner failure: 29846751864
+native authority-correction candidate: 2d02f66a7b88addf8d871c88e79489591c92e079
+native cargo validate run: 29895816472
+native cargo validate conclusion: success
 ```
 
-The native pull-request run produced no source-command logs because execution
-failed before runner allocation. To avoid substituting manual owner validation,
-the complete standalone candidate source, all nine integration tests, downstream
-conformance package, independent lockfile, and repository validation tooling were
-mirrored into a temporary public validation branch. GitHub Actions then executed
-the maintained `cargo validate` authority successfully.
+The original native pull-request run produced no source-command logs because
+execution failed before runner allocation. To avoid substituting manual owner
+validation, the complete standalone candidate source, all nine integration tests,
+downstream conformance package, independent lockfile, and repository validation
+tooling were mirrored into a temporary public validation branch. GitHub Actions
+then executed the maintained `cargo validate` authority successfully.
 
-The successful maintained-authority run covered repository policy, relative
+The successful maintained-authority runs covered repository policy, relative
 Markdown links, locked metadata, direct and inverse dependency trees, formatting,
 all workspace tests, downstream public conformance, all-target denied-warning
 Clippy, denied-warning rustdoc, Rust 1.93.0 tests, diff hygiene, and clean tracked
-state.
+state. Native run `29895816472` confirms the same authority executes successfully
+inside `Crystonix/runen-sdf` itself.
 
 The temporary validation branch and pull request were evidence-only and were not
-merged into RunenUI. A successful native `runen-sdf` validation run remains the
-final repository-authority correction gate.
+merged into RunenUI.
 
 ## Remaining integration fields
 
