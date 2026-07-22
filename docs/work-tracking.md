@@ -2,26 +2,37 @@
 
 ## Active objective
 
-Validate and accept the exact standalone parity revision for PT-RUNENSDF-003 without requiring owner-operated local commands.
+Correct the standalone repository authority after the accepted PT-RUNENSDF-003
+merge and obtain successful native repository validation for the corrected head.
 
-## Completed on the active branch
+## Completed
 
 1. canonical identity, licensing, security, provenance, and ownership;
-2. exact corrected source transfer from Runenwerk commit `8de096259eab30f8d67672010df9190970d0bfc4`;
-3. all nine integration-test modules with only `sdf` to `runen_sdf` import migration;
-4. downstream public trait, trait-object, unsupported-capability, and successful-query proof;
+2. exact corrected source transfer from Runenwerk commit
+   `8de096259eab30f8d67672010df9190970d0bfc4`;
+3. all nine integration-test modules with only the `sdf` to `runen_sdf` import
+   migration;
+4. downstream public trait, trait-object, invalid-construction,
+   unsupported-capability, and successful-query proof;
 5. framework API, numerical, query, and ownership documentation;
 6. committed independent lockfile;
 7. one maintained `cargo validate` authority;
-8. durable CI invoking that authority.
+8. durable repository CI invoking that authority;
+9. automated mirror validation in runs `29845971330` and `29846386222`;
+10. standalone parity review and merge as
+    `d52badefc640d6dc6dcdd40268af3aea1bb8eefe`.
 
-## Remaining PT-RUNENSDF-003 gate
+## Remaining repository closeout gate
 
-1. obtain automatic stable and Rust 1.93.0 validation evidence;
-2. correct any failures on the same branch;
-3. record the final standalone commit and workflow run in provenance;
-4. complete source-parity review;
-5. merge the standalone PR;
-6. close PT-RUNENSDF-003 and activate separately bounded PT-RUNENSDF-004 planning.
+1. pass the maintained `cargo validate` authority in native `runen-sdf` CI;
+2. record that exact run and validated head in status and provenance;
+3. merge the authority correction.
 
-Module regrouping, publication, GPU work, and Runenwerk cutover remain excluded.
+## External work
+
+Runenwerk consumer audit, dependency selection, `domain/sdf` retirement, lockfile
+cleanup, and duplicate-authority proof belong to `PT-RUNENSDF-004` in
+`Crystonix/runenwerk`.
+
+Module regrouping, publication, GPU work, rendering, ECS, UI, and persisted formats
+remain excluded.
