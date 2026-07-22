@@ -2,8 +2,8 @@
 
 ## Active objective
 
-Correct the standalone repository authority after the accepted PT-RUNENSDF-003
-merge and obtain successful native repository validation for the corrected head.
+Maintain the accepted standalone baseline while Runenwerk completes its separately
+owned clean cutover.
 
 ## Completed
 
@@ -20,13 +20,13 @@ merge and obtain successful native repository validation for the corrected head.
 8. durable repository CI invoking that authority;
 9. automated mirror validation in runs `29845971330` and `29846386222`;
 10. standalone parity review and merge as
-    `d52badefc640d6dc6dcdd40268af3aea1bb8eefe`.
+    `d52badefc640d6dc6dcdd40268af3aea1bb8eefe`;
+11. native repository validation in run `29895816472` on candidate
+    `2d02f66a7b88addf8d871c88e79489591c92e079`.
 
-## Remaining repository closeout gate
+## Remaining repository action
 
-1. pass the maintained `cargo validate` authority in native `runen-sdf` CI;
-2. record that exact run and validated head in status and provenance;
-3. merge the authority correction.
+Merge the authority correction after its final exact-head CI run passes.
 
 ## External work
 
