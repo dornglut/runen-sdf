@@ -26,16 +26,16 @@ public downstream conformance    complete
 framework documentation          complete
 committed independent lockfile   complete
 repository validation authority  complete
-durable repository CI            configured
+durable repository CI            complete
 standalone parity review         complete
 PT-RUNENSDF-003 merge             complete
+native repository validation     passed
 ```
 
 Automatic command validation passed in public mirror runs `29845971330` and
-`29846386222`. The native pull-request run `29846751864` failed before any runner
-step was allocated and therefore produced no source-command evidence. This
-repository retains the same `cargo validate` authority and requires a successful
-native run before this closeout correction is merged.
+`29846386222`. Native `runen-sdf` workflow run `29895816472` then executed the
+maintained `cargo validate` authority successfully on authority-correction
+candidate `2d02f66a7b88addf8d871c88e79489591c92e079`.
 
 ## External integration state
 
