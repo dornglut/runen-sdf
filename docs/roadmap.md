@@ -2,22 +2,35 @@
 
 ## PT-RUNENSDF-003 — Standalone repository
 
-State: active.
+State: complete.
 
-Deliver the corrected public package, package tests, downstream conformance, provenance, validation tooling, lockfile, and independent CI. Identify the exact standalone revision intended for Runenwerk.
+The corrected public package, package tests, downstream conformance, provenance,
+validation tooling, independent lockfile, and repository CI were accepted at
+`d52badefc640d6dc6dcdd40268af3aea1bb8eefe`.
 
-## PT-RUNENSDF-004 — Runenwerk cutover
+## PT-RUNENSDF-004 — Runenwerk clean cutover
 
-Blocked by PT-003.
+State: external integration work in `Crystonix/runenwerk`.
 
-Pin Runenwerk to the accepted standalone revision, migrate consumers, retire the in-workspace package, and validate integration. No compatibility package or permanent source mirror remains.
+Runenwerk must audit every current consumer, add the accepted standalone dependency
+only where a real consumer exists, remove `domain/sdf` and its workspace and lockfile
+authority, and prove that no forwarding package, alias, source include, branch
+dependency, or duplicate implementation remains.
 
-## PT-RUNENSDF-005 — Closeout and release readiness
+If Runenwerk has no product consumer, it must remove the internal package without
+adding an unused dependency on RunenSDF.
 
-Blocked by PT-004.
+## PT-RUNENSDF-005 — Adoption closeout and release readiness
 
-Close provenance, compatibility, ownership, release policy, branch cleanup, and adoption evidence.
+State: blocked by completion of the Runenwerk clean cutover.
+
+Close integration provenance, adoption evidence, compatibility policy, release
+policy, and obsolete branch cleanup. Publication remains disabled until separately
+authorized.
 
 ## Later framework work
 
-Property-test dependencies, benchmark regression policy, serialization, GPU backends, shader authoring, and multi-package decomposition require separate evidence and authorization.
+Property-test dependencies, benchmark regression policy, serialization, GPU
+backends, shader authoring, module regrouping, and multi-package decomposition
+require separate evidence and authorization. They are not part of the extraction
+or clean-cutover phases.
