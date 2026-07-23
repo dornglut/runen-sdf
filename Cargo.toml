@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2024"
 rust-version = "1.93.0"
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/Crystonix/runen-sdf"
+repository = "https://github.com/dornglut/runen-sdf"
 description = "Validated signed-field mathematics and CPU reference queries"
 publish = false
 
