@@ -2,12 +2,12 @@
 
 ## Active objective
 
-Maintain the accepted standalone baseline while Runenwerk completes its separately
-owned clean cutover.
+Maintain the accepted standalone RunenSDF baseline while `dornglut/runenwerk`
+completes its separately owned clean cutover under issue `#133`.
 
 ## Completed
 
-1. canonical identity, licensing, security, provenance, and ownership;
+1. canonical package identity, licensing, security, provenance, and ownership;
 2. exact corrected source transfer from Runenwerk commit
    `8de096259eab30f8d67672010df9190970d0bfc4`;
 3. all nine integration-test modules with only the `sdf` to `runen_sdf` import
@@ -19,20 +19,29 @@ owned clean cutover.
 7. one maintained `cargo validate` authority;
 8. durable repository CI invoking that authority;
 9. automated mirror validation in runs `29845971330` and `29846386222`;
-10. standalone parity review and merge as
+10. standalone parity review and source-transfer merge as
     `d52badefc640d6dc6dcdd40268af3aea1bb8eefe`;
-11. native repository validation in run `29895816472` on candidate
-    `2d02f66a7b88addf8d871c88e79489591c92e079`.
+11. native repository validation in run `29895816472`;
+12. standalone authority closeout through PR `#2`;
+13. shared organization validation adoption through PR `#4`.
 
-## Remaining repository action
+## Current repository responsibility
 
-Merge the authority correction after its final exact-head CI run passes.
+- preserve one public root package and its downstream conformance proof;
+- keep source provenance and validation authority accurate;
+- reject compatibility packages, source mirrors, Runenwerk dependencies, and stale
+  active owner paths;
+- do not absorb Runenwerk cutover work into this repository.
 
 ## External work
 
-Runenwerk consumer audit, dependency selection, `domain/sdf` retirement, lockfile
-cleanup, and duplicate-authority proof belong to `PT-RUNENSDF-004` in
-`Crystonix/runenwerk`.
+Runenwerk owns the exact reverse-dependency census, dependency decision,
+`domain/sdf` retirement, workspace and lockfile cleanup, active-authority cleanup,
+and duplicate-authority proof.
+
+Current evidence indicates the internal package may have no live product consumer.
+If the complete census confirms that result, Runenwerk must delete the package
+without adding an unused dependency on RunenSDF.
 
 Module regrouping, publication, GPU work, rendering, ECS, UI, and persisted formats
 remain excluded.
