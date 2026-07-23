@@ -3,7 +3,7 @@
 RunenSDF is a host-neutral Rust library for validated signed-field mathematics and deterministic CPU reference queries.
 
 ```text
-repository: Crystonix/runen-sdf
+repository: dornglut/runen-sdf
 package: runen-sdf
 crate: runen_sdf
 version: 0.1.0
@@ -49,4 +49,4 @@ A sample's `signed_value` preserves inside/surface/outside sign but is not unive
 - [Extraction provenance](docs/provenance/runenwerk-extraction.md)
 - [Validation](docs/tooling/validation.md)
 
-The transferred source baseline is Runenwerk commit `8de096259eab30f8d67672010df9190970d0bfc4`, path `domain/sdf`.
+The transferred source baseline is Runenwerk commit `8de096259eab30f8d67672010df9190970d0bfc4`, path `domain/sdf`. Historical owner paths are retained only where provenance requires them; current authority uses the `dornglut/*` namespace.

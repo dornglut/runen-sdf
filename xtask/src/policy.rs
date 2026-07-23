@@ -30,6 +30,7 @@ pub fn validate_repository() -> Result<(), String> {
     validate_required_files(&root)?;
     validate_manifest_inventory(&root)?;
     validate_root_manifest(&root)?;
+    validate_current_authority(&root)?;
     validate_path_dependencies(&root)?;
     validate_source_independence(&root)?;
     validate_no_gitlinks(&root)?;
@@ -83,6 +84,7 @@ fn validate_root_manifest(root: &Path) -> Result<(), String> {
         "name = \"runen-sdf\"",
         "rust-version = \"1.93.0\"",
         "license = \"MIT OR Apache-2.0\"",
+        "repository = \"https://github.com/dornglut/runen-sdf\"",
         "publish = false",
         "[lints]",
         "workspace = true",
@@ -93,6 +95,49 @@ fn validate_root_manifest(root: &Path) -> Result<(), String> {
             ));
         }
     }
+    Ok(())
+}
+
+fn validate_current_authority(root: &Path) -> Result<(), String> {
+    let checks = [
+        (
+            "README.md",
+            "repository: dornglut/runen-sdf",
+            &["repository: Crystonix/runen-sdf"][..],
+        ),
+        (
+            "SECURITY.md",
+            "`dornglut/runen-sdf`",
+            &["`Crystonix/runen-sdf`"][..],
+        ),
+        (
+            "docs/roadmap.md",
+            "`dornglut/runenwerk`",
+            &["`Crystonix/runenwerk`"][..],
+        ),
+        (
+            "docs/status-map.md",
+            "repository: dornglut/runen-sdf",
+            &["repository: Crystonix/runen-sdf"][..],
+        ),
+        (
+            "docs/work-tracking.md",
+            "`dornglut/runenwerk`",
+            &["`Crystonix/runenwerk`"][..],
+        ),
+    ];
+
+    for (relative, required, forbidden) in checks {
+        let path = root.join(relative);
+        let content = read(&path)?;
+        if !content.contains(required) {
+            return Err(format!(
+                "active authority is missing required current identity {required:?}: {relative}"
+            ));
+        }
+        reject_tokens(root, &path, &content, forbidden)?;
+    }
+
     Ok(())
 }
 
@@ -218,6 +263,9 @@ fn validate_no_gitlinks(root: &Path) -> Result<(), String> {
 fn validate_provenance(root: &Path) -> Result<(), String> {
     let provenance = read(root.join("docs/provenance/runenwerk-extraction.md"))?;
     for required in [
+        "dornglut/runen-sdf",
+        "dornglut/runenwerk",
+        "d52badefc640d6dc6dcdd40268af3aea1bb8eefe",
         "8de096259eab30f8d67672010df9190970d0bfc4",
         "domain/sdf",
         "PT-RUNENSDF-003",

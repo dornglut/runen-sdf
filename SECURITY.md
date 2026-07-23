@@ -4,7 +4,7 @@
 
 Do not disclose a suspected vulnerability in a public issue.
 
-Use GitHub's private vulnerability reporting for `Crystonix/runen-sdf` when it is available. Otherwise contact the repository owner privately through the contact method listed on the owner's GitHub profile and identify the affected revision, impact, reproduction conditions, and any proposed mitigation.
+Use GitHub's private vulnerability reporting for `dornglut/runen-sdf` when it is available. Otherwise contact the repository owner privately through the contact method listed on the owner's GitHub profile and identify the affected revision, impact, reproduction conditions, and any proposed mitigation.
 
 Reports are acknowledged after they can be reviewed. No response-time or disclosure deadline is guaranteed while the package remains unpublished.
 
