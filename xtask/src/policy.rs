@@ -4,13 +4,19 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
+const SHARED_WORKFLOW_REVISION: &str = "b6caad377102ca73794efaf734a65903b8efa829";
+
 const REQUIRED_FILES: &[&str] = &[
+    ".github/workflows/validation.yml",
+    "AGENTS.md",
+    "ARCHITECTURE.md",
     "Cargo.toml",
     "Cargo.lock",
     "LICENSE-MIT",
     "LICENSE-APACHE",
     "SECURITY.md",
     "README.md",
+    "TESTING.md",
     "docs/architecture.md",
     "docs/provenance/runenwerk-extraction.md",
     "docs/roadmap.md",
@@ -31,6 +37,7 @@ pub fn validate_repository() -> Result<(), String> {
     validate_manifest_inventory(&root)?;
     validate_root_manifest(&root)?;
     validate_current_authority(&root)?;
+    validate_workflow_authority(&root)?;
     validate_path_dependencies(&root)?;
     validate_source_independence(&root)?;
     validate_no_gitlinks(&root)?;
@@ -106,6 +113,36 @@ fn validate_current_authority(root: &Path) -> Result<(), String> {
             &["repository: Crystonix/runen-sdf"][..],
         ),
         (
+            "README.md",
+            "[Architecture entrypoint](ARCHITECTURE.md)",
+            &[][..],
+        ),
+        (
+            "README.md",
+            "[Testing and validation entrypoint](TESTING.md)",
+            &[][..],
+        ),
+        (
+            "ARCHITECTURE.md",
+            "[Detailed architecture](docs/architecture.md)",
+            &["Crystonix/runen-sdf"][..],
+        ),
+        (
+            "TESTING.md",
+            "`cargo validate`",
+            &["Crystonix/runen-sdf"][..],
+        ),
+        (
+            "AGENTS.md",
+            "`ARCHITECTURE.md`",
+            &["Crystonix/runen-sdf"][..],
+        ),
+        (
+            "AGENTS.md",
+            "`TESTING.md`",
+            &[][..],
+        ),
+        (
             "SECURITY.md",
             "`dornglut/runen-sdf`",
             &["`Crystonix/runen-sdf`"][..],
@@ -139,6 +176,37 @@ fn validate_current_authority(root: &Path) -> Result<(), String> {
     }
 
     Ok(())
+}
+
+fn validate_workflow_authority(root: &Path) -> Result<(), String> {
+    let path = root.join(".github/workflows/validation.yml");
+    let workflow = read(&path)?;
+    let expected = format!(
+        "uses: dornglut/github-workflows/.github/workflows/reusable-rust-cargo-validate.yml@{SHARED_WORKFLOW_REVISION}"
+    );
+
+    if !workflow.contains(&expected) {
+        return Err(format!(
+            "validation workflow is missing the accepted reusable workflow pin: {expected}"
+        ));
+    }
+    if workflow.matches("uses:").count() != 1 {
+        return Err("validation workflow must contain exactly one reusable workflow call".to_owned());
+    }
+    if !workflow.contains("permissions:\n  contents: read") {
+        return Err("validation workflow must declare read-only contents permission".to_owned());
+    }
+
+    reject_tokens(
+        root,
+        &path,
+        &workflow,
+        &[
+            "secrets: inherit",
+            "write-all",
+            "@79405c457b5b99d5cb9957c9bcdc475109e1e3bf",
+        ],
+    )
 }
 
 fn validate_path_dependencies(root: &Path) -> Result<(), String> {
