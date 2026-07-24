@@ -137,11 +137,7 @@ fn validate_current_authority(root: &Path) -> Result<(), String> {
             "`ARCHITECTURE.md`",
             &["Crystonix/runen-sdf"][..],
         ),
-        (
-            "AGENTS.md",
-            "`TESTING.md`",
-            &[][..],
-        ),
+        ("AGENTS.md", "`TESTING.md`", &[][..]),
         (
             "SECURITY.md",
             "`dornglut/runen-sdf`",
@@ -191,7 +187,9 @@ fn validate_workflow_authority(root: &Path) -> Result<(), String> {
         ));
     }
     if workflow.matches("uses:").count() != 1 {
-        return Err("validation workflow must contain exactly one reusable workflow call".to_owned());
+        return Err(
+            "validation workflow must contain exactly one reusable workflow call".to_owned(),
+        );
     }
     if !workflow.contains("permissions:\n  contents: read") {
         return Err("validation workflow must declare read-only contents permission".to_owned());
