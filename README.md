@@ -39,7 +39,9 @@ A sample's `signed_value` preserves inside/surface/outside sign but is not unive
 
 ## Authority
 
-- [Architecture](docs/architecture.md)
+- [Architecture entrypoint](ARCHITECTURE.md)
+- [Testing and validation entrypoint](TESTING.md)
+- [Detailed architecture](docs/architecture.md)
 - [Numerical contract](docs/numerics.md)
 - [Query model](docs/query-model.md)
 - [Ownership](docs/ownership.md)
@@ -47,6 +49,6 @@ A sample's `signed_value` preserves inside/surface/outside sign but is not unive
 - [Roadmap](docs/roadmap.md)
 - [Work tracking](docs/work-tracking.md)
 - [Extraction provenance](docs/provenance/runenwerk-extraction.md)
-- [Validation](docs/tooling/validation.md)
+- [Detailed validation contract](docs/tooling/validation.md)
 
 The transferred source baseline is Runenwerk commit `8de096259eab30f8d67672010df9190970d0bfc4`, path `domain/sdf`. Historical owner paths are retained only where provenance requires them; current authority uses the `dornglut/*` namespace.
