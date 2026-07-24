@@ -1,6 +1,6 @@
 # RunenSDF Agent Guide
 
-Start with `README.md`, `docs/architecture.md`, `docs/status-map.md`, and `docs/work-tracking.md`.
+Start with `README.md`, `ARCHITECTURE.md`, `TESTING.md`, `docs/status-map.md`, and `docs/work-tracking.md`.
 
 ## Repository mission
 
@@ -8,7 +8,7 @@ RunenSDF owns host-neutral signed-field mathematics and CPU queries. It must not
 
 ## Required workflow
 
-1. Read the current status and work-tracking documents.
+1. Read the current architecture, status, validation, and work-tracking authorities.
 2. Keep one public root package. Add a package only for a proven ownership and dependency boundary.
 3. Preserve validated construction, finite values, conservative safe-step semantics, explicit capabilities, and structured query outcomes.
 4. Do not introduce compatibility aliases or duplicate source authority.
