@@ -4,7 +4,11 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
-const SHARED_WORKFLOW_REVISION: &str = "b6caad377102ca73794efaf734a65903b8efa829";
+const SHARED_WORKFLOW_REVISION: &str = "624cb41adeed21a6461eb838bc7330bd0a5079fd";
+const RETIRED_WORKFLOW_REVISIONS: &[&str] = &[
+    "b6caad377102ca73794efaf734a65903b8efa829",
+    "79405c457b5b99d5cb9957c9bcdc475109e1e3bf",
+];
 
 const REQUIRED_FILES: &[&str] = &[
     ".github/workflows/validation.yml",
@@ -37,6 +41,7 @@ pub fn validate_repository() -> Result<(), String> {
     validate_manifest_inventory(&root)?;
     validate_root_manifest(&root)?;
     validate_current_authority(&root)?;
+    validate_workflow_inventory(&root)?;
     validate_workflow_authority(&root)?;
     validate_path_dependencies(&root)?;
     validate_source_independence(&root)?;
@@ -174,37 +179,164 @@ fn validate_current_authority(root: &Path) -> Result<(), String> {
     Ok(())
 }
 
+fn validate_workflow_inventory(root: &Path) -> Result<(), String> {
+    let directory = root.join(".github/workflows");
+    let mut found = BTreeSet::new();
+    let entries = fs::read_dir(&directory)
+        .map_err(|error| format!("failed to read {}: {error}", directory.display()))?;
+
+    for entry in entries {
+        let path = entry
+            .map_err(|error| format!("failed to read workflow entry: {error}"))?
+            .path();
+        if !path.is_file()
+            || !matches!(
+                path.extension().and_then(|extension| extension.to_str()),
+                Some("yml" | "yaml")
+            )
+        {
+            continue;
+        }
+        found.insert(normalized_relative(root, &path)?);
+    }
+
+    let expected = BTreeSet::from([".github/workflows/validation.yml".to_owned()]);
+    if found == expected {
+        Ok(())
+    } else {
+        Err(format!(
+            "unexpected workflow inventory; expected {expected:?}, found {found:?}"
+        ))
+    }
+}
+
+fn workflow_blocks(workflow: &str) -> Result<Vec<(String, Vec<String>)>, String> {
+    let mut blocks: Vec<(String, Vec<String>)> = Vec::new();
+
+    for raw_line in workflow.lines() {
+        let line = raw_line.trim_end();
+        if line.is_empty() || line.trim_start().starts_with('#') {
+            continue;
+        }
+        if line.starts_with(' ') || line.starts_with('\t') {
+            let Some((_, contents)) = blocks.last_mut() else {
+                return Err(
+                    "validation workflow has indented content before a top-level key".to_owned(),
+                );
+            };
+            contents.push(line.to_owned());
+            continue;
+        }
+
+        let Some((key, value)) = line.split_once(':') else {
+            return Err("validation workflow has malformed top-level content".to_owned());
+        };
+        if key.is_empty()
+            || !key.chars().all(|character| {
+                character.is_ascii_alphanumeric() || character == '_' || character == '-'
+            })
+            || (!value.is_empty() && !value.starts_with(' '))
+        {
+            return Err("validation workflow has malformed top-level content".to_owned());
+        }
+        blocks.push((key.to_owned(), vec![line.to_owned()]));
+    }
+
+    Ok(blocks)
+}
+
+fn workflow_block<'a>(blocks: &'a [(String, Vec<String>)], key: &str) -> Option<&'a [String]> {
+    blocks
+        .iter()
+        .find(|(block_key, _)| block_key == key)
+        .map(|(_, lines)| lines.as_slice())
+}
+
+fn matches_workflow_block(block: Option<&[String]>, expected: &[&str]) -> bool {
+    matches!(block, Some(lines) if lines.iter().map(String::as_str).eq(expected.iter().copied()))
+}
+
 fn validate_workflow_authority(root: &Path) -> Result<(), String> {
     let path = root.join(".github/workflows/validation.yml");
     let workflow = read(&path)?;
-    let expected = format!(
-        "uses: dornglut/github-workflows/.github/workflows/reusable-rust-cargo-validate.yml@{SHARED_WORKFLOW_REVISION}"
-    );
-
-    if !workflow.contains(&expected) {
-        return Err(format!(
-            "validation workflow is missing the accepted reusable workflow pin: {expected}"
-        ));
+    let blocks = workflow_blocks(&workflow)?;
+    let keys = blocks
+        .iter()
+        .map(|(key, _)| key.as_str())
+        .collect::<Vec<_>>();
+    let expected_keys = ["name", "on", "permissions", "concurrency", "jobs"];
+    if keys != expected_keys {
+        return Err("validation workflow must have exactly name, on, permissions, concurrency, and jobs top-level blocks".to_owned());
     }
-    if workflow.matches("uses:").count() != 1 {
+    if keys.iter().collect::<BTreeSet<_>>().len() != keys.len() {
+        return Err("validation workflow must not duplicate top-level keys".to_owned());
+    }
+
+    if !matches_workflow_block(
+        workflow_block(&blocks, "name"),
+        &["name: RunenSDF Validation"],
+    ) {
+        return Err("validation workflow identity must be RunenSDF Validation".to_owned());
+    }
+    if !matches_workflow_block(
+        workflow_block(&blocks, "on"),
+        &[
+            "on:",
+            "  pull_request:",
+            "    branches:",
+            "      - main",
+            "  push:",
+            "    branches:",
+            "      - main",
+            "  workflow_dispatch:",
+        ],
+    ) {
+        return Err("validation workflow triggers must be the accepted main pull-request, main push, and unconfigured dispatch set".to_owned());
+    }
+    if !matches_workflow_block(
+        workflow_block(&blocks, "permissions"),
+        &["permissions:", "  contents: read"],
+    ) {
+        return Err("validation workflow permissions must be exactly contents: read".to_owned());
+    }
+    if !matches_workflow_block(
+        workflow_block(&blocks, "concurrency"),
+        &[
+            "concurrency:",
+            "  group: runen-sdf-validation-${{ github.workflow }}-${{ github.ref }}",
+            "  cancel-in-progress: true",
+        ],
+    ) {
         return Err(
-            "validation workflow must contain exactly one reusable workflow call".to_owned(),
+            "validation workflow concurrency must match the accepted group and cancellation policy"
+                .to_owned(),
         );
     }
-    if !workflow.contains("permissions:\n  contents: read") {
-        return Err("validation workflow must declare read-only contents permission".to_owned());
+
+    let expected_uses = format!(
+        "    uses: dornglut/github-workflows/.github/workflows/reusable-rust-cargo-validate.yml@{SHARED_WORKFLOW_REVISION}"
+    );
+    let expected_job = [
+        "jobs:",
+        "  validate:",
+        "    name: Validate standalone framework",
+        expected_uses.as_str(),
+    ];
+    if !matches_workflow_block(workflow_block(&blocks, "jobs"), &expected_job) {
+        return Err(
+            "validation workflow must contain only the accepted validate reusable job".to_owned(),
+        );
     }
 
-    reject_tokens(
-        root,
-        &path,
-        &workflow,
-        &[
-            "secrets: inherit",
-            "write-all",
-            "@79405c457b5b99d5cb9957c9bcdc475109e1e3bf",
-        ],
-    )
+    for revision in RETIRED_WORKFLOW_REVISIONS {
+        if workflow.contains(revision) {
+            return Err(format!(
+                "validation workflow contains retired reusable workflow revision: {revision}"
+            ));
+        }
+    }
+
+    Ok(())
 }
 
 fn validate_path_dependencies(root: &Path) -> Result<(), String> {
