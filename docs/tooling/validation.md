@@ -21,9 +21,22 @@ The validation envelope covers:
 `Cargo.lock` is committed repository authority. CI treats a missing, outdated, or
 modified lockfile as a failure and never generates or commits it.
 
-The durable workflow is `.github/workflows/validation.yml`. It checks the exact
-revision and runs only `cargo validate` after installing stable Rust and the
-accepted Rust 1.93.0 minimum toolchain.
+The durable workflow is `.github/workflows/validation.yml`, the sole CI caller.
+It pins an immutable shared workflow revision. For `pull_request`, the expected
+repository revision is `github.event.pull_request.head.sha`; for `push` and
+`workflow_dispatch`, it is `github.sha`. Checkout explicitly selects that
+expected revision and proves `git rev-parse HEAD` equals it before validation.
+
+GitHub may load a pull-request workflow definition from a synthetic merge ref
+while the reusable workflow explicitly checks out reviewed feature-head repository
+contents. Those are separate facts: the definition ref is not the validated
+repository revision. The reusable Rust profile invokes `cargo +stable validate`:
+`+stable` selects the stable toolchain while executing the repository-owned
+`cargo validate` alias and its existing validation semantics.
+
+Successful validation output is compact. A failure preserves the real command
+status, emits bounded console diagnostics, retains complete output in a short-lived
+artifact outside the checkout, and removes temporary diagnostics after use.
 
 During PT-RUNENSDF-003, the private target repository's Actions service failed
 before runner allocation. Automatic command evidence was therefore obtained from
