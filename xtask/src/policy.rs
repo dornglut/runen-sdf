@@ -16,8 +16,8 @@ const REQUIRED_FILES: &[&str] = &[
     "ARCHITECTURE.md",
     "Cargo.toml",
     "Cargo.lock",
-    "LICENSE-MIT",
-    "LICENSE-APACHE",
+    "LICENSE",
+    "LICENSING.md",
     "SECURITY.md",
     "README.md",
     "TESTING.md",
@@ -40,6 +40,7 @@ pub fn validate_repository() -> Result<(), String> {
     validate_required_files(&root)?;
     validate_manifest_inventory(&root)?;
     validate_root_manifest(&root)?;
+    validate_member_manifest_licenses(&root)?;
     validate_current_authority(&root)?;
     validate_workflow_inventory(&root)?;
     validate_workflow_authority(&root)?;
@@ -63,6 +64,13 @@ fn validate_required_files(root: &Path) -> Result<(), String> {
             .map_err(|error| format!("failed to inspect {}: {error}", path.display()))?;
         if metadata.len() == 0 {
             return Err(format!("required repository file is empty: {required}"));
+        }
+    }
+    for retired in ["LICENSE-MIT", "LICENSE-APACHE"] {
+        if root.join(retired).exists() {
+            return Err(format!(
+                "retired repository license file still exists: {retired}"
+            ));
         }
     }
     Ok(())
@@ -95,7 +103,9 @@ fn validate_root_manifest(root: &Path) -> Result<(), String> {
     for required in [
         "name = \"runen-sdf\"",
         "rust-version = \"1.93.0\"",
-        "license = \"MIT OR Apache-2.0\"",
+        "[workspace.package]",
+        "license = \"GPL-3.0-only\"",
+        "license.workspace = true",
         "repository = \"https://github.com/dornglut/runen-sdf\"",
         "publish = false",
         "[lints]",
@@ -104,6 +114,26 @@ fn validate_root_manifest(root: &Path) -> Result<(), String> {
         if !manifest.contains(required) {
             return Err(format!(
                 "root manifest is missing required declaration: {required}"
+            ));
+        }
+    }
+    Ok(())
+}
+
+fn validate_member_manifest_licenses(root: &Path) -> Result<(), String> {
+    for relative in ["conformance/downstream/Cargo.toml", "xtask/Cargo.toml"] {
+        let manifest = read(root.join(relative))?;
+        if !manifest.contains("license.workspace = true") {
+            return Err(format!(
+                "workspace member manifest is missing inherited license metadata: {relative}"
+            ));
+        }
+        if manifest
+            .lines()
+            .any(|line| line.trim_start().starts_with("license = "))
+        {
+            return Err(format!(
+                "workspace member manifest must inherit rather than duplicate license metadata: {relative}"
             ));
         }
     }

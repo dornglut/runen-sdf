@@ -33,6 +33,10 @@ assert!(matches!(outcome, QueryOutcome::Hit(_)));
 
 A sample's `signed_value` preserves inside/surface/outside sign but is not universally exact Euclidean distance. `safe_step` is absent or a proven finite non-negative conservative tracing step. Sphere tracing consumes only `safe_step`; metric queries require exact-distance capability.
 
+## License
+
+The current RunenSDF source is available under the [GNU General Public License version 3 only](LICENSE) (`GPL-3.0-only`). A separate commercial license may be available from copyright holder(s) with sufficient rights to grant it; see [LICENSING.md](LICENSING.md) for the licensing policy, historical standalone terms, and extraction-provenance boundary.
+
 ## Validation
 
 `cargo validate` is the single maintained validation authority. CI invokes the same command and checks locked metadata, dependency direction, formatting, all tests, downstream conformance, Clippy, rustdoc, Rust 1.93.0, licenses, provenance, links, and clean repository state.
