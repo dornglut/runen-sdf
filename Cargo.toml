@@ -3,7 +3,7 @@ name = "runen-sdf"
 version = "0.1.0"
 edition = "2024"
 rust-version = "1.93.0"
-license = "MIT OR Apache-2.0"
+license.workspace = true
 repository = "https://github.com/dornglut/runen-sdf"
 description = "Validated signed-field mathematics and CPU reference queries"
 publish = false
@@ -14,6 +14,9 @@ members = [
     "conformance/downstream",
     "xtask",
 ]
+
+[workspace.package]
+license = "GPL-3.0-only"
 
 [dependencies]
 glam = "0.31.0"
