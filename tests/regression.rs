@@ -29,9 +29,20 @@ fn unbounded_fields_propagate_through_union_bounds() {
 }
 
 #[test]
+fn ray_constructor_normalizes_direction_for_world_distance() {
+    let origin = Vec3::new(1.0, 2.0, 3.0);
+    let ray = Ray3::try_new(origin, Vec3::new(0.0, 0.0, 4.0)).unwrap();
+
+    assert_eq!(ray.origin(), origin);
+    assert_eq!(ray.direction(), Vec3::Z);
+    assert_eq!(ray.point_at(2.5), Vec3::new(1.0, 2.0, 5.5));
+}
+
+#[test]
 fn invalid_ray_direction_is_rejected_at_construction() {
     assert!(Ray3::try_new(Vec3::ZERO, Vec3::ZERO).is_err());
     assert!(Ray3::try_new(Vec3::splat(f32::NAN), Vec3::X).is_err());
+    assert!(Ray3::try_new(Vec3::ZERO, Vec3::splat(f32::NAN)).is_err());
 }
 
 #[test]
